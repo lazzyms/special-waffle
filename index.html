@@ -28,6 +28,14 @@
     <link rel="icon" type="image/png" sizes="32x32" href="ios/32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="ios/16.png">
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #2c3e50 0%, #4a5568 100%);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --route-line-color: #cbd5e0;
+            --route-dot-color: #4a5568;
+            --accent-color: #2c3e50;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -36,9 +44,10 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #4a5568 100%);
+            background: var(--bg-gradient);
             min-height: 100vh;
             padding: 20px;
+            color: #2d3748;
         }
 
         .container {
@@ -69,143 +78,174 @@
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .day-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--card-shadow);
         }
 
         .day-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid #edf2f7;
         }
 
         .day-number {
             background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
             color: white;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5em;
+            font-size: 1.2em;
             font-weight: bold;
             margin-right: 15px;
             flex-shrink: 0;
         }
 
         .day-info h2 {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 5px;
+            font-size: 1.4em;
+            color: #1a202c;
+            margin-bottom: 2px;
         }
 
         .day-info p {
-            color: #666;
+            color: #718096;
             font-size: 0.9em;
         }
 
-        .stops {
-            margin-bottom: 20px;
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding-left: 0;
+        }
+
+        /* Continuous Vertical Line */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            bottom: 30px;
+            left: 92px;
+            /* Centered in gap: 80px col + 12px gap */
+            width: 2px;
+            background: var(--route-line-color);
         }
 
         .stop {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            padding: 10px;
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .stop:last-child {
+            margin-bottom: 0;
+        }
+
+        .time-col {
+            text-align: right;
+            font-weight: 800;
+            color: #2d3748;
+            font-size: 0.9em;
+            padding-top: 4px;
+            line-height: 1.4;
+        }
+
+        .content-col {
+            position: relative;
             background: #f8f9fa;
+            padding: 15px;
             border-radius: 8px;
             transition: background 0.2s ease;
         }
 
-        .stop:hover {
-            background: #e9ecef;
+        .content-col:hover {
+            background: #edf2f7;
         }
 
-        .stop-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .stop-details {
-            flex: 1;
+        /* The Dot */
+        .content-col::before {
+            content: '';
+            position: absolute;
+            left: -17px;
+            /* Adjust based on gap */
+            top: 8px;
+            width: 10px;
+            height: 10px;
+            background: var(--route-dot-color);
+            border: 2px solid white;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 0 2px var(--route-line-color);
         }
 
         .stop-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 3px;
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 1.05em;
+            margin-bottom: 4px;
+            display: block;
         }
 
-        .stop-time {
+        .stop-note {
             font-size: 0.85em;
-            color: #666;
+            color: #718096;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        .route-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
+        /* Map Button */
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: #2d3748;
             text-decoration: none;
+            font-size: 0.8em;
             font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            margin-right: 10px;
-            margin-bottom: 10px;
+            padding: 6px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 20px;
+            transition: all 0.2s;
         }
 
-        .route-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+        .map-btn:hover {
+            background: #2d3748;
+            color: white;
+            border-color: #2d3748;
         }
 
-        .route-button:active {
-            transform: translateY(0);
+        /* Transit Badge */
+        .transit-badge {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #4a5568;
+            font-size: 0.75em;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-weight: 600;
         }
 
-        .secondary-button {
-            background: linear-gradient(135deg, #4a5568 0%, #718096 100%);
-            box-shadow: 0 4px 15px rgba(74, 85, 104, 0.4);
-        }
-
-        .secondary-button:hover {
-            box-shadow: 0 6px 20px rgba(74, 85, 104, 0.6);
-        }
-
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .transit-icon {
+            margin-right: 4px;
         }
 
         .info-box {
-            background: #e5e7eb;
-            border-left: 4px solid #4b5563;
+            background: #edf2f7;
+            border-left: 4px solid #4a5568;
             padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+            border-radius: 6px;
+            margin-top: 25px;
         }
 
         .info-box p {
-            color: #374151;
-            margin: 5px 0;
-            font-size: 0.9em;
-        }
-
-        .info-box strong {
-            color: #1f2937;
+            color: #4a5568;
+            font-size: 0.85em;
+            margin: 4px 0;
         }
 
         @media (max-width: 600px) {
@@ -213,20 +253,21 @@
                 font-size: 1.8em;
             }
 
-            .day-header {
-                flex-direction: column;
-                text-align: center;
+            .timeline::before {
+                left: 74px;
             }
 
-            .day-number {
-                margin-right: 0;
-                margin-bottom: 10px;
+            .stop {
+                grid-template-columns: 65px 1fr;
+                gap: 20px;
             }
 
-            .route-button {
-                display: block;
-                text-align: center;
-                margin-bottom: 10px;
+            .content-col::before {
+                left: -15px;
+            }
+
+            .time-col {
+                font-size: 0.8em;
             }
         }
     </style>
@@ -235,8 +276,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🗺️ Abu Dhabi & Dubai Trip</h1>
-            <p>January 25-31, 2026 | Daily Routes</p>
+            <h1>Abu Dhabi & Dubai Trip</h1>
+            <p>January 25-31, 2026 | Maulik Sompura & Company</p>
         </div>
 
         <!-- Day 1 -->
@@ -249,89 +290,101 @@
                 </div>
             </div>
 
-            <div class="stops">
+            <div class="timeline">
                 <div class="stop">
-                    <span class="stop-icon">✈️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Arrival at Abu Dhabi International Airport</div>
-                        <div class="stop-time">12:25 AM - 2:30 AM (Immigration, baggage, transit to villa)</div>
+                    <div class="time-col">12:25 AM<br>2:30 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Arrival & Immigration</span>
+                        <span class="stop-note">Abu Dhabi International Airport</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Abu+Dhabi+International+Airport"
+                            target="_blank" class="map-btn">📍 Map</a>
                     </div>
                 </div>
-                <div class="stop">
-                    <span class="stop-icon">🛌</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Rest at Villa (Khalifa bin Shakhbout Street)</div>
-                        <div class="stop-time">2:30 AM - 9:30 AM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🍳</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Breakfast at Villa or Nearby Cafe</div>
-                        <div class="stop-time">9:30 AM - 10:00 AM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">📍</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Depart for Louvre Abu Dhabi</div>
-                        <div class="stop-time">10:00 AM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🎨</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Louvre Abu Dhabi</div>
-                        <div class="stop-time">10:30 AM - 12:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🍽️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Lunch (Louvre Cafe or Shawarma nearby)</div>
-                        <div class="stop-time">1:00 PM - 2:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🕌</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Sheikh Zayed Grand Mosque</div>
-                        <div class="stop-time">2:00 PM - 4:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🏛️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Heritage Village</div>
-                        <div class="stop-time">4:30 PM - 6:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🏨</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Arrive: JBR Marina Apartment, Dubai</div>
-                        <div class="stop-time">8:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🍽️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dinner at JBR Walk</div>
-                        <div class="stop-time">8:30 PM - 9:30 PM</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="button-container">
-                <a href="https://www.google.com/maps/dir/Khalifa+Bin+Shakhbout+St,+Abu+Dhabi/Louvre+Abu+Dhabi,+Saadiyat+Cultural+District,+Abu+Dhabi/Sheikh+Zayed+Grand+Mosque,+Abu+Dhabi/Heritage+Village,+Abu+Dhabi/JBR,+Dubai+Marina,+Dubai"
-                    target="_blank" class="route-button">📍 Open Full Route</a>
-                <a href="https://www.google.com/maps/place/Louvre+Abu+Dhabi" target="_blank"
-                    class="route-button secondary-button">Louvre Only</a>
+                <div class="stop">
+                    <div class="time-col">2:30 AM<br>9:30 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Rest at Villa</span>
+                        <span class="stop-note">Khalifa bin Shakhbout Street</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Khalifa+bin+Shakhbout+Street+Abu+Dhabi"
+                            target="_blank" class="map-btn">📍 Map</a>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">10:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Depart for Louvre</span>
+                        <span class="stop-note">Taxi/Careem recommended</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Louvre+Abu+Dhabi" target="_blank"
+                            class="map-btn">📍 Map</a>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">10:30 AM<br>12:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Louvre Abu Dhabi</span>
+                        <span class="stop-note">Art & Architecture</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Louvre+Abu+Dhabi" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚌 Transit: Bus 94 to Mosque</div>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">1:00 PM<br>2:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Lunch</span>
+                        <span class="stop-note">Louvre Cafe or nearby</span>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">2:00 PM<br>4:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Sheikh Zayed Grand Mosque</span>
+                        <span class="stop-note">Modest dress code required</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Sheikh+Zayed+Grand+Mosque"
+                            target="_blank" class="map-btn">📍 Map</a>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">4:30 PM<br>6:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Heritage Village</span>
+                        <span class="stop-note">Cultural workshops & beach view</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Heritage+Village+Abu+Dhabi"
+                            target="_blank" class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚌 Bus E100/E101 to Dubai</div>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">8:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Check-in: JBR Marina</span>
+                        <span class="stop-note">Dubai Apartment</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=JBR+Dubai+Marina" target="_blank"
+                            class="map-btn">📍 Map</a>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">8:30 PM<br>9:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Dinner at JBR Walk</span>
+                        <span class="stop-note">The Walk, Jumeirah Beach Residence</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=The+Walk+JBR" target="_blank"
+                            class="map-btn">📍 Map</a>
+                    </div>
+                </div>
             </div>
 
             <div class="info-box">
-                <p><strong>🚌 Transit:</strong> Taxi → Bus 094 → Taxi → Bus E100 + Metro</p>
-                <p><strong>💰 Budget:</strong> AED 82 transport | AED 80 food | AED 63 entry</p>
+                <p><strong>💰 Budget:</strong> ~AED 225 (Transport + Entry + Food)</p>
+                <p><strong>💡 Tip:</strong> Bus 94 connects Louvre & Mosque directly.</p>
             </div>
         </div>
 
@@ -345,83 +398,70 @@
                 </div>
             </div>
 
-            <div class="stops">
+            <div class="timeline">
                 <div class="stop">
-                    <span class="stop-icon">�</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Quick Breakfast at Apartment</div>
-                        <div class="stop-time">4:45 AM - 5:15 AM</div>
+                    <div class="time-col">5:15 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Depart JBR</span>
+                        <span class="stop-note">Ideally Taxi for early start</span>
+                        <div class="transit-badge">🚕 Taxi OR 🚇 Metro Red Line (DMCC Stn)</div>
                     </div>
                 </div>
-                <div class="stop">
-                    <span class="stop-icon">�🏨</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Start: JBR Apartment</div>
-                        <div class="stop-time">Departure: 5:15 AM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🌅</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Burj Khalifa (6:30 AM Slot)</div>
-                        <div class="stop-time">6:15 AM - 8:00 AM ✅ PRE-BOOKED</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🖼️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dubai Frame</div>
-                        <div class="stop-time">8:30 AM - 9:30 AM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">☕</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Wings of Mexico + Public Cafe</div>
-                        <div class="stop-time">10:00 AM - 10:30 AM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🛍️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dubai Mall + L'ETO Gelato</div>
-                        <div class="stop-time">11:00 AM - 1:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">�️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Light Lunch at Dubai Mall Food Court</div>
-                        <div class="stop-time">1:30 PM - 2:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🏜️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Desert Safari Pickup (Dubai Mall)</div>
-                        <div class="stop-time">2:30 PM - 9:30 PM ✅ PRE-BOOKED</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🚇</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Return to JBR Apartment</div>
-                        <div class="stop-time">Drop-off at Dubai Mall, Metro to DMCC</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="button-container">
-                <a href="https://www.google.com/maps/dir/JBR,+Dubai+Marina,+Dubai/Burj+Khalifa,+Dubai/Dubai+Frame,+Zabeel+Park,+Dubai/Public+Cafe,+Jumeirah,+Dubai/Dubai+Mall,+Dubai"
-                    target="_blank" class="route-button">📍 Open Full Route</a>
-                <a href="https://www.google.com/maps/place/Burj+Khalifa" target="_blank"
-                    class="route-button secondary-button">Burj Khalifa</a>
+                <div class="stop">
+                    <div class="time-col">6:15 AM<br>8:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Burj Khalifa</span>
+                        <span class="stop-note">At The Top (Sunrise/Morning Slot)</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Burj+Khalifa" target="_blank"
+                            class="map-btn">📍 Map</a>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">8:30 AM<br>9:30 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Dubai Frame</span>
+                        <span class="stop-note">Zabeel Park</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dubai+Frame" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚇 Metro: Max Station</div>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">10:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Wings of Mexico</span>
+                        <span class="stop-note">Photo Stop & Public Cafe</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Wings+of+Mexico+Statue+Dubai"
+                            target="_blank" class="map-btn">📍 Map</a>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">11:00 AM<br>1:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Dubai Mall</span>
+                        <span class="stop-note">Exploration & L'ETO Gelato</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=The+Dubai+Mall" target="_blank"
+                            class="map-btn">📍 Map</a>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">2:30 PM<br>9:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Desert Safari</span>
+                        <span class="stop-note">Pickup point: Dubai Mall</span>
+                        <div class="transit-badge">🚙 Tour Transfer</div>
+                    </div>
+                </div>
             </div>
 
             <div class="info-box">
-                <p><strong>🚇 Transit:</strong> Metro Red Line (DMCC ↔ Burj Khalifa/Dubai Mall ↔ Al Jaffiliya)</p>
-                <p><strong>💰 Budget:</strong> AED 24 transport | AED 60 food | AED 50 entry</p>
-                <p><strong>⚠️ Important:</strong> Safari pickup at Dubai Mall at 2:30 PM sharp!</p>
+                <p><strong>💰 Budget:</strong> ~AED 135 (excluding Safari)</p>
+                <p><strong>🚇 Metro:</strong> Red Line connects JBR (DMCC) ↔ Burj Khalifa/Dubai Mall.</p>
             </div>
         </div>
 
@@ -435,82 +475,59 @@
                 </div>
             </div>
 
-            <div class="stops">
+            <div class="timeline">
                 <div class="stop">
-                    <span class="stop-icon">�</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Leisurely Breakfast at Apartment</div>
-                        <div class="stop-time">8:00 AM - 9:00 AM</div>
+                    <div class="time-col">9:00 AM<br>11:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Pool & Marina Beach</span>
+                        <span class="stop-note">Relaxation at JBR</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Marina+Beach+Dubai" target="_blank"
+                            class="map-btn">📍 Map</a>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🏊</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Morning: Pool & Marina Beach</div>
-                        <div class="stop-time">9:00 AM - 11:00 AM</div>
+                    <div class="time-col">12:00 PM<br>2:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">The Green Planet</span>
+                        <span class="stop-note">City Walk</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=The+Green+Planet+Dubai" target="_blank"
+                            class="map-btn">📍 Map</a>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🌿</span>
-                    <div class="stop-details">
-                        <div class="stop-name">The Green Planet</div>
-                        <div class="stop-time">12:00 PM - 2:00 PM ✅ PRE-BOOKED</div>
+                    <div class="time-col">2:30 PM<br>4:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Mall of the Emirates</span>
+                        <span class="stop-note">Lunch at Bikanerwala</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Mall+of+the+Emirates" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚇 Metro: Mall of the Emirates Stn</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🍛</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Bikanerwala (Mall of Emirates)</div>
-                        <div class="stop-time">2:30 PM - 4:00 PM</div>
+                    <div class="time-col">7:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">City Walk Stroll</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=City+Walk+Dubai" target="_blank"
+                            class="map-btn">📍 Map</a>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🛍️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Emirates Mall + Ski Dubai</div>
-                        <div class="stop-time">4:00 PM - 6:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">☕</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Light Refreshment at Food Court</div>
-                        <div class="stop-time">6:00 PM - 6:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🚶</span>
-                    <div class="stop-details">
-                        <div class="stop-name">City Walk</div>
-                        <div class="stop-time">7:00 PM - 8:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🎡</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Ain Dubai (Bluewaters Island)</div>
-                        <div class="stop-time">9:00 PM - 10:00 PM ✅ PRE-BOOKED</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🍽️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dinner at Bluewaters Restaurants</div>
-                        <div class="stop-time">10:00 PM - 10:30 PM</div>
+                    <div class="time-col">9:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Bluewaters Island</span>
+                        <span class="stop-note">Ain Dubai Views & Dinner</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Bluewaters+Island" target="_blank"
+                            class="map-btn">📍 Map</a>
                     </div>
                 </div>
             </div>
-
-            <div class="button-container">
-                <a href="https://www.google.com/maps/dir/JBR,+Dubai+Marina,+Dubai/The+Green+Planet,+City+Walk,+Dubai/Mall+of+the+Emirates,+Dubai/City+Walk,+Dubai/Ain+Dubai,+Bluewaters+Island,+Dubai"
-                    target="_blank" class="route-button">📍 Open Full Route</a>
-                <a href="https://www.google.com/maps/place/Ain+Dubai" target="_blank"
-                    class="route-button secondary-button">Ain Dubai Only</a>
-            </div>
-
             <div class="info-box">
-                <p><strong>🚇 Transit:</strong> Metro + Taxis for flexibility</p>
-                <p><strong>💰 Budget:</strong> AED 142 transport | AED 100 food | AED 245 entry</p>
+                <p><strong>🚇 Transit:</strong> Flexible Metro use. Taxi recommended for Bluewaters.</p>
             </div>
         </div>
 
@@ -524,82 +541,52 @@
                 </div>
             </div>
 
-            <div class="stops">
+            <div class="timeline">
                 <div class="stop">
-                    <span class="stop-icon">�</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Breakfast at Apartment</div>
-                        <div class="stop-time">7:30 AM - 8:00 AM</div>
+                    <div class="time-col">8:30 AM<br>10:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Palm Jumeirah</span>
+                        <span class="stop-note">Monorail Ride to Atlantis</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Palm+Jumeirah+Monorail" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚋 Tram (Palm Jumeirah) → 🚝 Monorail (Gateway)</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">�🌴</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Palm Jumeirah Monorail</div>
-                        <div class="stop-time">8:30 AM - 10:00 AM</div>
+                    <div class="time-col">2:00 PM<br>4:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Aya Universe</span>
+                        <span class="stop-note">Wafi City Mall</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Aya+Universe+Dubai" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚇 Metro: Dubai Healthcare City</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🚶</span>
-                    <div class="stop-details">
-                        <div class="stop-name">City Walk + Lunch</div>
-                        <div class="stop-time">10:30 AM - 1:30 PM</div>
+                    <div class="time-col">7:30 PM<br>9:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Museum of the Future</span>
+                        <span class="stop-note">Requires advance booking</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Museum+of+the+Future" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚇 Metro: Emirates Towers</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">✨</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Aya Universe</div>
-                        <div class="stop-time">2:00 PM - 4:30 PM ✅ PRE-BOOKED</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🛍️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Wafi City Mall</div>
-                        <div class="stop-time">5:00 PM - 6:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">☕</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Light Snack at Wafi Food Court</div>
-                        <div class="stop-time">6:30 PM - 7:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🚀</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Museum of the Future</div>
-                        <div class="stop-time">7:30 PM - 9:30 PM ✅ PRE-BOOKED</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">⛲</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dubai Fountain + Boardwalk</div>
-                        <div class="stop-time">10:00 PM - 11:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🍽️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Late Dinner at Dubai Mall Food Court</div>
-                        <div class="stop-time">11:00 PM - 11:30 PM</div>
+                    <div class="time-col">10:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Dubai Fountain</span>
+                        <span class="stop-note">Boardwalk Show</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=The+Dubai+Fountain" target="_blank"
+                            class="map-btn">📍 Map</a>
                     </div>
                 </div>
             </div>
-
-            <div class="button-container">
-                <a href="https://www.google.com/maps/dir/Palm+Jumeirah+Monorail,+Dubai/City+Walk,+Dubai/Aya+Universe,+Al+Quoz,+Dubai/Wafi+City+Mall,+Dubai/Museum+of+the+Future,+Dubai/Dubai+Fountain,+Dubai"
-                    target="_blank" class="route-button">📍 Open Full Route</a>
-                <a href="https://www.google.com/maps/place/Museum+of+the+Future" target="_blank"
-                    class="route-button secondary-button">Museum Only</a>
-            </div>
-
             <div class="info-box">
-                <p><strong>🚇 Transit:</strong> Tram + Monorail (AED 30) + Metro + Taxis</p>
-                <p><strong>💰 Budget:</strong> AED 194 transport | AED 90 food | AED 270 entry</p>
+                <p><strong>🚇 Transit:</strong> Multi-mode day! Tram + Monorail + Metro.</p>
             </div>
         </div>
 
@@ -609,73 +596,32 @@
                 <div class="day-number">5</div>
                 <div class="day-info">
                     <h2>Wednesday, Jan 29 - Global Village</h2>
-                    <p>Leisure Morning + Night Festival</p>
+                    <p>Relaxation & Night Festival</p>
                 </div>
             </div>
 
-            <div class="stops">
+            <div class="timeline">
                 <div class="stop">
-                    <span class="stop-icon">�</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Leisurely Breakfast</div>
-                        <div class="stop-time">8:00 AM - 9:30 AM</div>
+                    <div class="time-col">9:30 AM<br>12:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Relax at JBR</span>
+                        <span class="stop-note">Beach/Pool & Lunch</span>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🏊</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Pool, Beach & Marina Walk Relaxation</div>
-                        <div class="stop-time">9:30 AM - 12:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🍽️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Lunch at JBR Walk</div>
-                        <div class="stop-time">12:00 PM - 1:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🛌</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Rest at Apartment</div>
-                        <div class="stop-time">1:00 PM - 3:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">☕</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Snack and Prepare for Evening</div>
-                        <div class="stop-time">3:30 PM - 4:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🌍</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Global Village</div>
-                        <div class="stop-time">4:00 PM - 1:00 AM ✅ PRE-BOOKED</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🍴</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Jordan Food Stop + Luqaimat</div>
-                        <div class="stop-time">Inside Global Village</div>
+                    <div class="time-col">4:00 PM<br>1:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Global Village</span>
+                        <span class="stop-note">World Pavilions, Food & Shows</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Global+Village+Dubai" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚌 Bus 106 from Mall of Emirates</div>
                     </div>
                 </div>
             </div>
-
-            <div class="button-container">
-                <a href="https://www.google.com/maps/dir/JBR,+Dubai+Marina,+Dubai/Global+Village,+Dubai" target="_blank"
-                    class="route-button">📍 Open Route</a>
-                <a href="https://www.google.com/maps/place/Global+Village" target="_blank"
-                    class="route-button secondary-button">Global Village</a>
-            </div>
-
             <div class="info-box">
-                <p><strong>🚇 Transit:</strong> Metro to Jebel Ali + Bus/Taxi (AED 50), Return Taxi (AED 80)</p>
-                <p><strong>💰 Budget:</strong> AED 130 transport | AED 100 food | AED 25 entry</p>
-                <p><strong>⚠️ Note:</strong> Late night finish - Taxi recommended for return</p>
+                <p><strong>💡 Tip:</strong> Bus 106 is the direct tourist route (AED 10) from Mall of Emirates.</p>
             </div>
         </div>
 
@@ -685,87 +631,66 @@
                 <div class="day-number">6</div>
                 <div class="day-info">
                     <h2>Thursday, Jan 30 - Old Dubai</h2>
-                    <p>Dolphinarium, Souks & Heritage</p>
+                    <p>Culture, Creek & Souks</p>
                 </div>
             </div>
 
-            <div class="stops">
+            <div class="timeline">
                 <div class="stop">
-                    <span class="stop-icon">🍳</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Breakfast at Apartment</div>
-                        <div class="stop-time">9:00 AM - 9:30 AM</div>
+                    <div class="time-col">11:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Dubai Dolphinarium</span>
+                        <span class="stop-note">Creek Park</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dubai+Dolphinarium" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚇 Metro: Dubai Healthcare City</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🐬</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dubai Dolphinarium</div>
-                        <div class="stop-time">11:00 AM - 12:00 PM ✅ PRE-BOOKED</div>
+                    <div class="time-col">12:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Al Fahidi Historical District</span>
+                        <span class="stop-note">Dubai Museum & Heritage</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Al+Fahidi+Historical+District"
+                            target="_blank" class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚇 Metro: Sharaf DG</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🏛️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Al Fahidi Fort & Dubai Museum</div>
-                        <div class="stop-time">12:30 PM - 2:00 PM</div>
+                    <div class="time-col">2:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Lunch: Al Khayma Heritage</span>
+                        <span class="stop-note">Traditional Emirati Cuisine</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Al+Khayma+Heritage+Restaurant"
+                            target="_blank" class="map-btn">📍 Map</a>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🍽️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Al Khayema Restaurant + Coffee Museum</div>
-                        <div class="stop-time">2:00 PM - 3:30 PM</div>
+                    <div class="time-col">3:30 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Souks & Abra Ride</span>
+                        <span class="stop-note">Gold & Spice Souks</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dubai+Gold+Souk" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🛶 Abra Crossing (1 AED)</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🛍️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Gold Souk, Spice Souk + Abra Ride</div>
-                        <div class="stop-time">3:30 PM - 5:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🏪</span>
-                    <div class="stop-details">
-                        <div class="stop-name">3 AED Store (Bargain Shopping)</div>
-                        <div class="stop-time">5:00 PM - 5:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🦐</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Waterfront Market (Fresh Seafood Viewing)</div>
-                        <div class="stop-time">6:00 PM - 7:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">📦</span>
-                    <div class="stop-details">
-                        <div class="stop-name">The Box Park (Sketchers Outlet)</div>
-                        <div class="stop-time">7:00 PM - 7:30 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">🌊</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Al Seef + Museum of Illusions</div>
-                        <div class="stop-time">8:00 PM - 10:00 PM ✅ PRE-BOOKED</div>
+                    <div class="time-col">8:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Al Seef</span>
+                        <span class="stop-note">Old World Charm meets Modern</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Al+Seef+Dubai" target="_blank"
+                            class="map-btn">📍 Map</a>
                     </div>
                 </div>
             </div>
-
-            <div class="button-container">
-                <a href="https://www.google.com/maps/dir/JBR,+Dubai+Marina,+Dubai/Dubai+Dolphinarium,+Creek+Park,+Dubai/Al+Fahidi+Historical+District,+Dubai/Gold+Souk,+Deira,+Dubai/Spice+Souk,+Dubai/Al+Seef,+Dubai"
-                    target="_blank" class="route-button">📍 Open Full Route</a>
-                <a href="https://www.google.com/maps/place/Gold+Souk" target="_blank"
-                    class="route-button secondary-button">Souks Area</a>
-            </div>
-
             <div class="info-box">
-                <p><strong>🚇 Transit:</strong> Metro to Al Ghubaiba + Walking + AED 1 Abra!</p>
-                <p><strong>💰 Budget:</strong> AED 20 transport | AED 110 food | AED 178 entry</p>
-                <p><strong>👟 Steps:</strong> ~13,000 steps - Wear comfortable shoes!</p>
+                <p><strong>👟 Steps:</strong> High walking day (~13k steps). Comfortable shoes mandatory!</p>
             </div>
         </div>
 
@@ -774,81 +699,56 @@
             <div class="day-header">
                 <div class="day-number">7</div>
                 <div class="day-info">
-                    <h2>Friday, Jan 31 - Departure Day</h2>
-                    <p>Last Shopping & Airport</p>
+                    <h2>Friday, Jan 31 - Departure</h2>
+                    <p>Shopping & Farewell</p>
                 </div>
             </div>
 
-            <div class="stops">
+            <div class="timeline">
                 <div class="stop">
-                    <span class="stop-icon">📦</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Packing & Checkout</div>
-                        <div class="stop-time">8:00 AM - 9:30 AM</div>
+                    <div class="time-col">9:30 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Checkout & Packing</span>
+                        <span class="stop-note">JBR Apartment</span>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🕌</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Ibn Battuta Mall</div>
-                        <div class="stop-time">10:30 AM - 12:00 PM</div>
+                    <div class="time-col">10:30 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Ibn Battuta Mall</span>
+                        <span class="stop-note">World's Largest Themed Mall</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Ibn+Battuta+Mall" target="_blank"
+                            class="map-btn">📍 Map</a>
+                        <div class="transit-badge">🚇 Metro: Ibn Battuta Stn</div>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🛍️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dubai Outlet Mall/Village</div>
-                        <div class="stop-time">12:30 PM - 2:00 PM</div>
+                    <div class="time-col">3:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Madame Tussauds</span>
+                        <span class="stop-note">Bluewaters Island</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Madame+Tussauds+Dubai" target="_blank"
+                            class="map-btn">📍 Map</a>
                     </div>
                 </div>
+
                 <div class="stop">
-                    <span class="stop-icon">🎬</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Madame Tussauds (Bluewaters)</div>
-                        <div class="stop-time">3:00 PM - 5:00 PM ✅ PRE-BOOKED</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">👨‍👩‍👧</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Hiral Didi's Home</div>
-                        <div class="stop-time">5:00 PM - 11:00 PM</div>
-                    </div>
-                </div>
-                <div class="stop">
-                    <span class="stop-icon">✈️</span>
-                    <div class="stop-details">
-                        <div class="stop-name">Dubai International Airport (DXB)</div>
-                        <div class="stop-time">Departure: 12:00 AM - 2:00 AM</div>
+                    <div class="time-col">12:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Departure</span>
+                        <span class="stop-note">Dubai International Airport (DXB)</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dubai+International+Airport"
+                            target="_blank" class="map-btn">📍 Map</a>
                     </div>
                 </div>
             </div>
-
-            <div class="button-container">
-                <a href="https://www.google.com/maps/dir/JBR,+Dubai+Marina,+Dubai/Ibn+Battuta+Mall,+Dubai/Dubai+Outlet+Mall,+Dubai/Madame+Tussauds+Dubai,+Bluewaters+Island/Dubai+International+Airport"
-                    target="_blank" class="route-button">📍 Open Full Route</a>
-                <a href="https://www.google.com/maps/place/Dubai+International+Airport" target="_blank"
-                    class="route-button secondary-button">Airport Only</a>
-            </div>
-
             <div class="info-box">
-                <p><strong>🚇 Transit:</strong> Metro + Taxis, Airport Taxi (AED 100)</p>
-                <p><strong>💰 Budget:</strong> AED 186 transport | AED 70 food | AED 135 entry</p>
-                <p><strong>⚠️ Important:</strong> Early checkout, family time in evening, midnight departure</p>
+                <p><strong>👋 Safe Travels!</strong> Arrive at airport 3 hours before flight.</p>
             </div>
         </div>
 
-        <!-- Summary Footer -->
-        <div class="day-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-            <div style="text-align: center;">
-                <h2 style="color: white; margin-bottom: 15px;">✈️ Trip Summary</h2>
-                <p style="font-size: 1.1em; opacity: 0.95; margin-bottom: 10px;"><strong>7 Days in Abu Dhabi &
-                        Dubai</strong></p>
-                <p style="opacity: 0.9;">January 25-31, 2026</p>
-                <p style="opacity: 0.9; margin-top: 10px;">📍 Multiple Attractions | 🎫 Pre-booked Experiences | 🚇
-                    Public Transport Friendly</p>
-            </div>
-        </div>
     </div>
 
     <!-- Service Worker Registration -->
