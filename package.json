@@ -1,0 +1,11 @@
+{
+  "name": "dubai-trip-pwa",
+  "version": "1.0.0",
+  "description": "Dubai Trip PWA - Icon Generator",
+  "scripts": {
+    "generate-icons": "node generate-icons.js",
+    "serve": "npx serve -l 8000"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
