@@ -382,18 +382,29 @@ document.addEventListener("DOMContentLoaded", () => {
     window.navigator.standalone ||
     document.referrer.includes("android-app://");
 
-  // Only show splash screen in PWA mode
+  // Hide splash screen on first launch of PWA (not on refresh or background return)
+  const SPLASH_SHOWN_KEY = "splash_shown_in_session";
+  const splashAlreadyShown = sessionStorage.getItem(SPLASH_SHOWN_KEY);
+
   if (isPWA) {
     const splashScreen = document.getElementById("splash-screen");
-    splashScreen.classList.add("show");
 
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        splashScreen.classList.add("fade-out");
+    // If splash already shown in this session, hide it immediately
+    if (splashAlreadyShown) {
+      splashScreen.style.display = "none";
+    } else {
+      // Mark splash as shown for this session
+      sessionStorage.setItem(SPLASH_SHOWN_KEY, "true");
+
+      // Hide splash after load
+      window.addEventListener("load", () => {
         setTimeout(() => {
-          splashScreen.style.display = "none";
-        }, 500);
-      }, 2500);
-    });
+          splashScreen.classList.add("fade-out");
+          setTimeout(() => {
+            splashScreen.style.display = "none";
+          }, 500);
+        }, 2500);
+      });
+    }
   }
 });
