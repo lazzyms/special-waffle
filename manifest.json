@@ -1,8 +1,8 @@
 {
-  "name": "Dubai Trip - Daily Routes",
-  "short_name": "Dubai Trip",
+  "name": "Abu Dhabi - Dubai 2026 - Daily Routes",
+  "short_name": "Dubai 2026",
   "description": "Your Dubai trip daily routes and travel companion",
-  "start_url": "/index.html",
+  "start_url": "/special-waffle/index.html",
   "display": "standalone",
   "background_color": "#2c3e50",
   "theme_color": "#2c3e50",
