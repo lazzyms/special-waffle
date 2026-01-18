@@ -1,7 +1,9 @@
-const CACHE_NAME = "dubai-trip-v2";
+const CACHE_NAME = "dubai-trip-v3";
 const urlsToCache = [
   "/special-waffle/",
   "/special-waffle/index.html",
+  "/special-waffle/styles.css",
+  "/special-waffle/app.js",
   "/special-waffle/manifest.json",
   "/special-waffle/splash.png",
   "/special-waffle/android/android-launchericon-192-192.png",
