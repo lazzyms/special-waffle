@@ -246,6 +246,28 @@ const isPWAInstalled =
 const isInstallDismissed =
   localStorage.getItem(INSTALL_DISMISSED_KEY) === "true";
 
+// Detect iOS
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+// For iOS devices, show install instructions if not installed
+if (isIOS && isSafari && !isPWAInstalled && !isInstallDismissed) {
+  // Delay showing banner slightly for better UX
+  setTimeout(() => {
+    installBanner.classList.add("show");
+    installBanner.classList.add("ios-mode");
+    // Update the text for iOS
+    const installText = installBanner.querySelector(".install-text");
+    installText.innerHTML = `
+      <h3>Add to Home Screen</h3>
+      <p>Tap <span style="font-size: 18px; vertical-align: middle;">⎙</span> (Share) then "Add to Home Screen"</p>
+    `;
+    // Hide the install button for iOS, only show dismiss
+    installBtn.style.display = "none";
+  }, 1000);
+}
+
+// For Android/Chrome
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
