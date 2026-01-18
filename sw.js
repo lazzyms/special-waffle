@@ -1,13 +1,14 @@
-const CACHE_NAME = "dubai-trip-v1";
+const CACHE_NAME = "dubai-trip-v2";
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/android/android-launchericon-192-192.png",
-  "/android/android-launchericon-512-512.png",
-  "/ios/180.png",
-  "/ios/152.png",
-  "/ios/167.png",
+  "/special-waffle/",
+  "/special-waffle/index.html",
+  "/special-waffle/manifest.json",
+  "/special-waffle/splash.png",
+  "/special-waffle/android/android-launchericon-192-192.png",
+  "/special-waffle/android/android-launchericon-512-512.png",
+  "/special-waffle/ios/180.png",
+  "/special-waffle/ios/152.png",
+  "/special-waffle/ios/167.png",
 ];
 
 // Install event - cache resources

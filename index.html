@@ -27,13 +27,65 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="ios/32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="ios/16.png">
+
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image"
+        media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        href="splash.png">
+    <link rel="apple-touch-startup-image"
+        media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        href="splash.png">
+    <link rel="apple-touch-startup-image"
+        media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        href="splash.png">
+    <link rel="apple-touch-startup-image"
+        media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        href="splash.png">
+    <link rel="apple-touch-startup-image"
+        media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        href="splash.png">
+
     <style>
+        /* PWA Splash Screen Overlay - Only in standalone mode */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #2c3e50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #splash-screen.show {
+            display: flex;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #splash-screen img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
         :root {
-            --bg-gradient: linear-gradient(135deg, #2c3e50 0%, #4a5568 100%);
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            --route-line-color: #cbd5e0;
-            --route-dot-color: #4a5568;
-            --accent-color: #2c3e50;
+            --bg-gradient: linear-gradient(135deg, #e8e5d5 0%, #d4cfbb 100%);
+            --card-shadow: 0 4px 6px rgba(44, 36, 22, 0.15), 0 2px 4px rgba(44, 36, 22, 0.1);
+            --route-line-color: #a89968;
+            --route-dot-color: #4a3f2f;
+            --accent-color: #2c2416;
+            --paper-bg: #f4f1ea;
+            --text-primary: #2c2416;
+            --text-secondary: #5a4f3f;
+            --border-color: #a89968;
         }
 
         * {
@@ -43,11 +95,17 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
             background: var(--bg-gradient);
             min-height: 100vh;
             padding: 20px;
-            color: #2d3748;
+            color: var(--text-primary);
+            background-image:
+                repeating-linear-gradient(0deg,
+                    rgba(168, 153, 104, 0.03) 0px,
+                    rgba(168, 153, 104, 0.03) 1px,
+                    transparent 1px,
+                    transparent 25px);
         }
 
         .container {
@@ -57,28 +115,53 @@
 
         .header {
             text-align: center;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 30px;
             padding: 20px;
+            background: var(--paper-bg);
+            border: 3px double var(--border-color);
+            border-radius: 4px;
+            box-shadow: var(--card-shadow);
         }
 
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: bold;
         }
 
         .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.1em;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
         }
 
         .day-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--paper-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
             padding: 25px;
             margin-bottom: 20px;
             box-shadow: var(--card-shadow);
+            position: relative;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 24px,
+                    rgba(168, 153, 104, 0.05) 24px,
+                    rgba(168, 153, 104, 0.05) 25px);
+            pointer-events: none;
+            border-radius: 4px;
         }
 
         .day-header {
@@ -86,59 +169,74 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #edf2f7;
+            border-bottom: 2px dashed var(--border-color);
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .day-header:hover {
+            background: rgba(168, 153, 104, 0.08);
+            margin: -5px -10px 30px -10px;
+            padding: 5px 10px 20px 10px;
+            border-radius: 4px;
         }
 
         .day-number {
-            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
-            color: white;
+            background: var(--text-primary);
+            color: var(--paper-bg);
             width: 50px;
             height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2em;
+            font-size: 1.3em;
             font-weight: bold;
             margin-right: 15px;
             flex-shrink: 0;
+            border: 3px solid var(--text-primary);
+            box-shadow: 0 2px 4px rgba(44, 36, 22, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .day-number::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border: 1px dashed var(--border-color);
+            border-radius: 50%;
+            opacity: 0.5;
         }
 
         .day-info h2 {
             font-size: 1.4em;
-            color: #1a202c;
+            color: var(--text-primary);
             margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: bold;
         }
 
         .day-info p {
-            color: #718096;
+            color: var(--text-secondary);
             font-size: 0.9em;
+            font-style: italic;
         }
 
         /* Timeline Styles */
         .timeline {
-            position: relative;
-            padding-left: 0;
+            /* Simple timeline without vertical line */
         }
 
-        /* Continuous Vertical Line */
-        .timeline::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            bottom: 30px;
-            left: 92px;
-            /* Centered in gap: 80px col + 12px gap */
-            width: 2px;
-            background: var(--route-line-color);
-        }
 
         .stop {
             display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 25px;
+            grid-template-columns: min-content 1fr;
+            gap: 20px;
             margin-bottom: 25px;
-            position: relative;
         }
 
         .stop:last-child {
@@ -147,87 +245,111 @@
 
         .time-col {
             text-align: right;
-            font-weight: 800;
-            color: #2d3748;
-            font-size: 0.9em;
+            font-weight: bold;
+            color: var(--text-primary);
+            font-size: 0.95em;
             padding-top: 4px;
             line-height: 1.4;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
         }
 
         .content-col {
-            position: relative;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.5);
             padding: 15px;
-            border-radius: 8px;
-            transition: background 0.2s ease;
+            border-radius: 2px;
+            border: 1px solid rgba(168, 153, 104, 0.3);
+            transition: all 0.2s ease;
         }
 
         .content-col:hover {
-            background: #edf2f7;
+            background: rgba(255, 255, 255, 0.7);
+            border-color: var(--border-color);
+            box-shadow: 0 1px 3px rgba(44, 36, 22, 0.1);
         }
 
-        /* The Dot */
-        .content-col::before {
-            content: '';
-            position: absolute;
-            left: -17px;
-            /* Adjust based on gap */
-            top: 8px;
-            width: 10px;
-            height: 10px;
-            background: var(--route-dot-color);
-            border: 2px solid white;
-            border-radius: 50%;
-            z-index: 2;
-            box-shadow: 0 0 0 2px var(--route-line-color);
+        .content-col.nearby {
+            background: rgba(168, 200, 104, 0.3);
+            border: 2px solid #6b8e23;
+            box-shadow: 0 0 10px rgba(107, 142, 35, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(107, 142, 35, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(107, 142, 35, 0.6);
+            }
         }
 
         .stop-name {
-            font-weight: 700;
-            color: #1a202c;
+            font-weight: bold;
+            color: var(--text-primary);
             font-size: 1.05em;
             margin-bottom: 4px;
             display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
         .stop-note {
             font-size: 0.85em;
-            color: #718096;
+            color: var(--text-secondary);
             margin-bottom: 8px;
             display: block;
+            font-style: italic;
         }
 
         /* Map Button */
         .map-btn {
             display: inline-flex;
             align-items: center;
-            background: white;
-            color: #2d3748;
+            background: var(--paper-bg);
+            color: var(--text-primary);
             text-decoration: none;
-            font-size: 0.8em;
-            font-weight: 600;
-            padding: 6px 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 20px;
-            transition: all 0.2s;
+            font-size: 0.75em;
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 2px solid var(--text-primary);
+            border-radius: 3px;
+            transition: all 0.15s;
+            margin-right: 8px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 0 var(--text-primary),
+                0 2px 3px rgba(44, 36, 22, 0.3);
         }
 
         .map-btn:hover {
-            background: #2d3748;
-            color: white;
-            border-color: #2d3748;
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 var(--text-primary),
+                0 1px 2px rgba(44, 36, 22, 0.3);
+        }
+
+        .map-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 var(--text-primary),
+                0 0 1px rgba(44, 36, 22, 0.3);
         }
 
         /* Transit Badge */
         .transit-badge {
             display: inline-block;
-            background: #e2e8f0;
-            color: #4a5568;
+            background: rgba(168, 153, 104, 0.15);
+            color: var(--text-primary);
             font-size: 0.75em;
             padding: 4px 8px;
-            border-radius: 4px;
+            border: 1px dashed var(--border-color);
+            border-radius: 2px;
             margin-top: 8px;
-            font-weight: 600;
+            font-weight: bold;
+            letter-spacing: 0.03em;
         }
 
         .transit-icon {
@@ -235,17 +357,51 @@
         }
 
         .info-box {
-            background: #edf2f7;
-            border-left: 4px solid #4a5568;
+            background: rgba(168, 153, 104, 0.1);
+            border-left: 4px solid var(--text-primary);
+            border-right: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             padding: 15px;
-            border-radius: 6px;
+            border-radius: 2px;
             margin-top: 25px;
+            position: relative;
+            z-index: 1;
         }
 
         .info-box p {
-            color: #4a5568;
+            color: var(--text-primary);
             font-size: 0.85em;
             margin: 4px 0;
+            line-height: 1.6;
+        }
+
+        /* Collapsible functionality */
+        .chevron {
+            margin-left: auto;
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: bold;
+        }
+
+        .day-card.collapsed .chevron {
+            transform: rotate(-90deg);
+        }
+
+        .day-card.collapsed .timeline,
+        .day-card.collapsed .info-box {
+            display: none;
+        }
+
+        .day-card.collapsed .day-header {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .day-card.collapsed {
+            padding: 15px 25px;
         }
 
         @media (max-width: 600px) {
@@ -253,17 +409,9 @@
                 font-size: 1.8em;
             }
 
-            .timeline::before {
-                left: 74px;
-            }
-
             .stop {
-                grid-template-columns: 65px 1fr;
-                gap: 20px;
-            }
-
-            .content-col::before {
-                left: -15px;
+                grid-template-columns: min-content 1fr;
+                gap: 15px;
             }
 
             .time-col {
@@ -274,6 +422,11 @@
 </head>
 
 <body>
+    <!-- Splash Screen Overlay -->
+    <div id="splash-screen">
+        <img src="splash.png" alt="Loading...">
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>Abu Dhabi & Dubai Trip</h1>
@@ -281,13 +434,14 @@
         </div>
 
         <!-- Day 1 -->
-        <div class="day-card">
+        <div class="day-card" data-date="2026-01-25">
             <div class="day-header">
                 <div class="day-number">1</div>
                 <div class="day-info">
                     <h2>Saturday, Jan 25 - Abu Dhabi</h2>
                     <p>Cultural Exploration Day</p>
                 </div>
+                <span class="chevron">▼</span>
             </div>
 
             <div class="timeline">
@@ -297,17 +451,29 @@
                         <span class="stop-name">Arrive Abu Dhabi</span>
                         <span class="stop-note">AUH Airport</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Abu+Dhabi+International+Airport"
-                            target="_blank" class="map-btn">📍 Map</a>
+                            target="_blank" class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Abu%20Dhabi%20International%20Airport" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
                 <div class="stop">
-                    <div class="time-col">12:30 AM<br>8:00 AM</div>
+                    <div class="time-col">12:30 AM<br>2:30 AM</div>
                     <div class="content-col">
-                        <span class="stop-name">Travel to Villa & Rest</span>
-                        <span class="stop-note">Khalifa bin Shakhbout Street</span>
+                        <span class="stop-name">AUH Airport to Apartment</span>
+                        <span class="stop-note">Immigration, Luggage, Taxi</span>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">2:30 AM<br>9:00 AM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Rest at Apartment</span>
+                        <span class="stop-note">11-13, Al Wataniyah street, Khalifa bin Shakhbout Street</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Khalifa+bin+Shakhbout+Street+Abu+Dhabi"
-                            target="_blank" class="map-btn">📍 Map</a>
+                            target="_blank" class="map-btn">📍 Google</a>
+                        <a href="
+https://2gis.ae/dubai/geo/70030076151220306/54.363482,24.455676" target="_blank" class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
@@ -317,7 +483,9 @@
                         <span class="stop-name">Louvre Abu Dhabi</span>
                         <span class="stop-note">Saadiyat Island</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Louvre+Abu+Dhabi" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Louvre%20Abu%20Dhabi" target="_blank" class="map-btn">📍
+                            2GIS</a>
                         <div class="transit-badge">🚌 Transit: Bus 94 to Mosque</div>
                     </div>
                 </div>
@@ -328,7 +496,9 @@
                         <span class="stop-name">Sheikh Zayed Grand Mosque</span>
                         <span class="stop-note">Grand Mosque District</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Sheikh+Zayed+Grand+Mosque"
-                            target="_blank" class="map-btn">📍 Map</a>
+                            target="_blank" class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Sheikh%20Zayed%20Grand%20Mosque" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
@@ -338,7 +508,9 @@
                         <span class="stop-name">Heritage Village</span>
                         <span class="stop-note">Abu Dhabi Corniche</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Heritage+Village+Abu+Dhabi"
-                            target="_blank" class="map-btn">📍 Map</a>
+                            target="_blank" class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Heritage%20Village%20Abu%20Dhabi" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
@@ -358,13 +530,14 @@
         </div>
 
         <!-- Day 2 -->
-        <div class="day-card">
+        <div class="day-card" data-date="2026-01-26">
             <div class="day-header">
                 <div class="day-number">2</div>
                 <div class="day-info">
                     <h2>Sunday, Jan 26 - Dubai Icons</h2>
                     <p>Burj Khalifa & Desert Safari</p>
                 </div>
+                <span class="chevron">▼</span>
             </div>
 
             <div class="timeline">
@@ -374,7 +547,9 @@
                         <span class="stop-name">Burj Khalifa</span>
                         <span class="stop-note">06:30 Slot (Sunrise)</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Burj+Khalifa" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Burj%20Khalifa" target="_blank" class="map-btn">📍
+                            2GIS</a>
                     </div>
                 </div>
 
@@ -384,7 +559,8 @@
                         <span class="stop-name">Dubai Frame & Wings of Mexico</span>
                         <span class="stop-note">Zabeel Park / Photo Op</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Dubai+Frame" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Dubai%20Frame" target="_blank" class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
@@ -394,7 +570,9 @@
                         <span class="stop-name">Dubai Mall</span>
                         <span class="stop-note">L’ETO (gelato)</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=The+Dubai+Mall" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/The%20Dubai%20Mall" target="_blank" class="map-btn">📍
+                            2GIS</a>
                     </div>
                 </div>
 
@@ -415,13 +593,14 @@
         </div>
 
         <!-- Day 3 -->
-        <div class="day-card">
+        <div class="day-card" data-date="2026-01-27">
             <div class="day-header">
                 <div class="day-number">3</div>
                 <div class="day-info">
                     <h2>Monday, Jan 27 - Leisure Day</h2>
                     <p>Green Planet, Malls & Ain Dubai</p>
                 </div>
+                <span class="chevron">▼</span>
             </div>
 
             <div class="timeline">
@@ -431,7 +610,9 @@
                         <span class="stop-name">Leisure & Pool</span>
                         <span class="stop-note">Marina Mall / Beach</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Marina+Beach+Dubai" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Marina%20Beach%20Dubai" target="_blank" class="map-btn">📍
+                            2GIS</a>
                     </div>
                 </div>
 
@@ -441,7 +622,9 @@
                         <span class="stop-name">The Green Planet</span>
                         <span class="stop-note">City Walk</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=The+Green+Planet+Dubai" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/The%20Green%20Planet%20Dubai" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
@@ -451,7 +634,9 @@
                         <span class="stop-name">City Walk & Emirates Mall</span>
                         <span class="stop-note">Lunch at Bikanerwala</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Mall+of+the+Emirates" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Mall%20of%20the%20Emirates" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                         <div class="transit-badge">🚇 Metro: Mall of the Emirates Stn</div>
                     </div>
                 </div>
@@ -462,7 +647,9 @@
                         <span class="stop-name">Ain Dubai</span>
                         <span class="stop-note">Bluewaters Island</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Bluewaters+Island" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Bluewaters%20Island" target="_blank" class="map-btn">📍
+                            2GIS</a>
                     </div>
                 </div>
             </div>
@@ -472,13 +659,14 @@
         </div>
 
         <!-- Day 4 -->
-        <div class="day-card">
+        <div class="day-card" data-date="2026-01-28">
             <div class="day-header">
                 <div class="day-number">4</div>
                 <div class="day-info">
                     <h2>Tuesday, Jan 28 - Future Day</h2>
                     <p>Palm, Aya Universe & Museum of Future</p>
                 </div>
+                <span class="chevron">▼</span>
             </div>
 
             <div class="timeline">
@@ -488,7 +676,9 @@
                         <span class="stop-name">Palm Jumeirah View</span>
                         <span class="stop-note">Monorail Ride</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Palm+Jumeirah+Monorail" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Palm%20Jumeirah%20Monorail" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                         <div class="transit-badge">🚋 Tram (Palm Jumeirah) → 🚝 Monorail (Gateway)</div>
                     </div>
                 </div>
@@ -507,7 +697,9 @@
                         <span class="stop-name">Aya Universe</span>
                         <span class="stop-note">Wafi City Mall</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Aya+Universe+Dubai" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Aya%20Universe%20Dubai" target="_blank" class="map-btn">📍
+                            2GIS</a>
                         <div class="transit-badge">🚇 Metro: Dubai Healthcare City</div>
                     </div>
                 </div>
@@ -518,7 +710,9 @@
                         <span class="stop-name">Museum of the Future</span>
                         <span class="stop-note">Requires advance booking</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Museum+of+the+Future" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Museum%20of%20the%20Future" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                         <div class="transit-badge">🚇 Metro: Emirates Towers</div>
                     </div>
                 </div>
@@ -529,7 +723,9 @@
                         <span class="stop-name">Dubai Fountain & Boardwalk</span>
                         <span class="stop-note">After MoF</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=The+Dubai+Fountain" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/The%20Dubai%20Fountain" target="_blank" class="map-btn">📍
+                            2GIS</a>
                     </div>
                 </div>
             </div>
@@ -539,13 +735,14 @@
         </div>
 
         <!-- Day 5 -->
-        <div class="day-card">
+        <div class="day-card" data-date="2026-01-29">
             <div class="day-header">
                 <div class="day-number">5</div>
                 <div class="day-info">
                     <h2>Wednesday, Jan 29 - Global Village</h2>
                     <p>Relaxation & Night Festival</p>
                 </div>
+                <span class="chevron">▼</span>
             </div>
 
             <div class="timeline">
@@ -563,7 +760,9 @@
                         <span class="stop-name">Global Village</span>
                         <span class="stop-note">Jordan Food, Luqaimat</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Global+Village+Dubai" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Global%20Village%20Dubai" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                         <div class="transit-badge">🚌 Bus 106 from Mall of Emirates</div>
                     </div>
                 </div>
@@ -574,13 +773,14 @@
         </div>
 
         <!-- Day 6 -->
-        <div class="day-card">
+        <div class="day-card" data-date="2026-01-30">
             <div class="day-header">
                 <div class="day-number">6</div>
                 <div class="day-info">
                     <h2>Thursday, Jan 30 - Old Dubai</h2>
                     <p>Culture, Creek & Souks</p>
                 </div>
+                <span class="chevron">▼</span>
             </div>
 
             <div class="timeline">
@@ -590,7 +790,9 @@
                         <span class="stop-name">Dubai Dolphinarium</span>
                         <span class="stop-note">Creek Park</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Dubai+Dolphinarium" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Dubai%20Dolphinarium" target="_blank" class="map-btn">📍
+                            2GIS</a>
                         <div class="transit-badge">🚇 Metro: Dubai Healthcare City</div>
                     </div>
                 </div>
@@ -601,7 +803,9 @@
                         <span class="stop-name">Museum of Illusions</span>
                         <span class="stop-note">Al Seef Area</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Museum+of+Illusions+Dubai"
-                            target="_blank" class="map-btn">📍 Map</a>
+                            target="_blank" class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Museum%20of%20Illusions%20Dubai" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
@@ -611,7 +815,9 @@
                         <span class="stop-name">Al Fahidi & Lunch</span>
                         <span class="stop-note">Al Khayma Heritage Restaurant</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Al+Khayma+Heritage+Restaurant"
-                            target="_blank" class="map-btn">📍 Map</a>
+                            target="_blank" class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Al%20Khayma%20Heritage%20Restaurant" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
@@ -621,7 +827,9 @@
                         <span class="stop-name">Souks & 3 AED Store</span>
                         <span class="stop-note">Gold/Spice Souks, Waterfront Market</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Dubai+Gold+Souk" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Dubai%20Gold%20Souk" target="_blank" class="map-btn">📍
+                            2GIS</a>
                         <div class="transit-badge">🛶 Abra Crossing (1 AED)</div>
                     </div>
                 </div>
@@ -632,7 +840,9 @@
                         <span class="stop-name">Al Seef</span>
                         <span class="stop-note">Old World Charm</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Al+Seef+Dubai" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Al%20Seef%20Dubai" target="_blank" class="map-btn">📍
+                            2GIS</a>
                     </div>
                 </div>
             </div>
@@ -642,13 +852,14 @@
         </div>
 
         <!-- Day 7 -->
-        <div class="day-card">
+        <div class="day-card" data-date="2026-01-31">
             <div class="day-header">
                 <div class="day-number">7</div>
                 <div class="day-info">
                     <h2>Friday, Jan 31 - Departure</h2>
                     <p>Shopping & Farewell</p>
                 </div>
+                <span class="chevron">▼</span>
             </div>
 
             <div class="timeline">
@@ -666,36 +877,42 @@
                         <span class="stop-name">Malls Tour</span>
                         <span class="stop-note">Ibn Battuta + Outlet Village + Marina Mall</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Ibn+Battuta+Mall" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Ibn%20Battuta%20Mall" target="_blank" class="map-btn">📍
+                            2GIS</a>
                         <div class="transit-badge">🚇 Metro: Ibn Battuta Stn</div>
+                    </div>
+                </div>
+
+                <div class="stop">
+                    <div class="time-col">2:00 PM<br>3:00 PM</div>
+                    <div class="content-col">
+                        <span class="stop-name">Souvenir Shopping</span>
+                        <span class="stop-note">Dates, Kunafa, etc.</span>
                     </div>
                 </div>
 
                 <div class="stop">
                     <div class="time-col">3:00 PM<br>6:00 PM</div>
                     <div class="content-col">
-                        <span class="stop-name">Madame Tussauds</span>
+                        <span class="stop-name">Madame Tussauds or Bluewaters</span>
                         <span class="stop-note">Bluewaters Island</span>
                         <a href="https://www.google.com/maps/search/?api=1&query=Madame+Tussauds+Dubai" target="_blank"
-                            class="map-btn">📍 Map</a>
+                            class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Madame%20Tussauds%20Dubai" target="_blank"
+                            class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
 
                 <div class="stop">
-                    <div class="time-col">5:00 PM<br>12:00 AM</div>
+                    <div class="time-col">10:00 PM<br>12:00 AM</div>
                     <div class="content-col">
-                        <span class="stop-name">Visit Hiral Didi's Home</span>
-                        <span class="stop-note">Marina Area</span>
-                    </div>
-                </div>
-
-                <div class="stop">
-                    <div class="time-col">12:00 AM</div>
-                    <div class="content-col">
-                        <span class="stop-name">Departure</span>
-                        <span class="stop-note">Depart for DXB</span>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Dubai+International+Airport"
-                            target="_blank" class="map-btn">📍 Map</a>
+                        <span class="stop-name">Departure - DXB Terminal 1</span>
+                        <span class="stop-note">Flight Time: 05:15 AM</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Dubai+International+Airport+Terminal+1"
+                            target="_blank" class="map-btn">📍 Google</a>
+                        <a href="https://2gis.ae/dubai/search/Dubai%20International%20Airport%20Terminal%201"
+                            target="_blank" class="map-btn">📍 2GIS</a>
                     </div>
                 </div>
             </div>
@@ -720,6 +937,187 @@
             });
         }
 
+        // Location Detection and Highlighting
+        function requestLocationAndHighlight() {
+            if (!navigator.geolocation) {
+                console.log('Geolocation is not supported by this browser.');
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    console.log(`User location: ${userLat}, ${userLon}`);
+                    highlightNearbyPlaces(userLat, userLon);
+                },
+                (error) => {
+                    console.error('Error getting location:', error.message);
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            console.log('User denied the request for Geolocation.');
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            console.log('Location information is unavailable.');
+                            break;
+                        case error.TIMEOUT:
+                            console.log('The request to get user location timed out.');
+                            break;
+                        default:
+                            console.log('An unknown error occurred.');
+                            break;
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            // Haversine formula to calculate distance in kilometers
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c;
+            return distance;
+        }
+
+        function highlightNearbyPlaces(userLat, userLon) {
+            // Get today's date in local timezone
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+
+            console.log(`🔍 Looking for activities on: ${todayStr}`);
+
+            // Find today's card
+            const todayCard = document.querySelector(`.day-card[data-date="${todayStr}"]`);
+            if (!todayCard) {
+                console.log(`❌ No activities scheduled for today (${todayStr}).`);
+                console.log('Available dates:', Array.from(document.querySelectorAll('.day-card')).map(c => c.getAttribute('data-date')));
+                return;
+            }
+
+            console.log(`✓ Found today's card for ${todayStr}`);
+
+            // Get all stops in today's card
+            const stops = todayCard.querySelectorAll('.stop');
+            console.log(`Found ${stops.length} stops for today`);
+
+            stops.forEach((stop, index) => {
+                const mapLinks = stop.querySelectorAll('.map-btn');
+                const stopName = stop.querySelector('.stop-name')?.textContent;
+                console.log(`Checking stop ${index + 1}: ${stopName}`);
+
+                // Extract location from Google Maps link
+                mapLinks.forEach(link => {
+                    if (link.href.includes('google.com/maps')) {
+                        let locationName = null;
+                        let coords = null;
+
+                        // Handle search URLs with query parameter
+                        const urlParams = new URLSearchParams(link.href.split('?')[1]);
+                        const query = urlParams.get('query');
+
+                        if (query) {
+                            locationName = query;
+                        } else if (link.href.includes('/place/')) {
+                            // Handle /place/ URLs - extract name and possibly coordinates
+                            const placeMatch = link.href.match(/\/place\/([^\/]+)/);
+                            if (placeMatch) {
+                                locationName = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+                            }
+
+                            // Try to extract coordinates from @lat,lon format
+                            const coordMatch = link.href.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                            if (coordMatch) {
+                                coords = {
+                                    lat: parseFloat(coordMatch[1]),
+                                    lon: parseFloat(coordMatch[2])
+                                };
+                            }
+                        }
+
+                        if (locationName) {
+                            checkLocationProximity(userLat, userLon, locationName, stop, coords);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Location database for major Dubai/Abu Dhabi landmarks
+        const locationCoordinates = {
+            'Home': { lat: 21.7637, lon: 72.1315 },
+            'Sheer Apartments': { lat: 54.363482, lon: 24.455676 },
+            'Louvre Abu Dhabi': { lat: 24.5338, lon: 54.3984 },
+            'Sheikh Zayed Grand Mosque': { lat: 24.4128, lon: 54.4747 },
+            'Heritage Village Abu Dhabi': { lat: 24.4833, lon: 54.3553 },
+            'Burj Khalifa': { lat: 25.1972, lon: 55.2744 },
+            'Dubai Frame': { lat: 25.2356, lon: 55.3002 },
+            'The Dubai Mall': { lat: 25.1972, lon: 55.2796 },
+            'Dubai Mall': { lat: 25.1972, lon: 55.2796 },
+            'Marina Beach Dubai': { lat: 25.0804, lon: 55.1394 },
+            'The Green Planet Dubai': { lat: 25.2176, lon: 55.2601 },
+            'Mall of the Emirates': { lat: 25.1182, lon: 55.2005 },
+            'Bluewaters Island': { lat: 25.0803, lon: 55.1219 },
+            'Ain Dubai': { lat: 25.0803, lon: 55.1219 },
+            'Palm Jumeirah Monorail': { lat: 25.1124, lon: 55.1390 },
+            'Aya Universe': { lat: 25.2171, lon: 55.2828 },
+            'Museum of the Future': { lat: 25.2195, lon: 55.2804 },
+            'Ibn Battuta Mall': { lat: 25.0443, lon: 55.1173 },
+            'Madame Tussauds Dubai': { lat: 25.0803, lon: 55.1219 },
+            'Dubai International Airport': { lat: 25.2532, lon: 55.3657 }
+        };
+
+        function checkLocationProximity(userLat, userLon, placeName, stopElement, directCoords = null) {
+            const normalizedPlaceName = placeName.replace(/\+/g, ' ').replace(/%26/g, '&');
+            console.log(`  🔎 Searching for: "${normalizedPlaceName}"`);
+
+            let placeCoords = directCoords;
+
+            // If we don't have direct coordinates from URL, search in our database
+            if (!placeCoords) {
+                for (const [key, coords] of Object.entries(locationCoordinates)) {
+                    if (normalizedPlaceName.includes(key) || key.includes(normalizedPlaceName)) {
+                        placeCoords = coords;
+                        console.log(`  ✓ Matched with: "${key}" at (${coords.lat}, ${coords.lon})`);
+                        break;
+                    }
+                }
+            } else {
+                console.log(`  ✓ Using coordinates from URL: (${directCoords.lat}, ${directCoords.lon})`);
+            }
+
+            if (placeCoords) {
+                const distance = calculateDistance(userLat, userLon, placeCoords.lat, placeCoords.lon);
+                console.log(`  📏 Distance to ${normalizedPlaceName}: ${distance.toFixed(2)} km`);
+
+                // Highlight if within 1km (adjust threshold as needed)
+                if (distance <= 1.0) {
+                    const contentCol = stopElement.querySelector('.content-col');
+                    if (contentCol) {
+                        contentCol.classList.add('nearby');
+                        console.log(`  🎯 HIGHLIGHTED: ${normalizedPlaceName}`);
+                    }
+                } else {
+                    console.log(`  ⚠️ Too far (${distance.toFixed(2)} km > 1.0 km)`);
+                }
+            } else {
+                console.log(`  ❌ No coordinates found for "${normalizedPlaceName}"`);
+            }
+        }
+
         // Install prompt
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -727,6 +1125,85 @@
             deferredPrompt = e;
             // You can show your own install button here
             console.log('PWA install prompt ready');
+        });
+
+        // Date-based collapsible functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const dayCards = document.querySelectorAll('.day-card');
+            const STORAGE_KEY = 'trip_collapsed_state';
+
+            // Get stored collapse states
+            let savedStates = {};
+            try {
+                savedStates = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            } catch (e) {
+                console.error('Error parsing saved states:', e);
+            }
+
+            // Initialize cards based on date and saved state
+            dayCards.forEach(card => {
+                const cardDate = card.getAttribute('data-date');
+                if (!cardDate) return;
+
+                // Get current date at midnight for comparison (dynamically checked each time)
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const dayDate = new Date(cardDate + 'T00:00:00');
+                const isPastDay = dayDate < today;
+
+                // Check if user manually toggled this card
+                const cardId = cardDate;
+                const hasUserPreference = savedStates.hasOwnProperty(cardId);
+
+                // Determine collapsed state:
+                // - If user has toggled it before, use their preference
+                // - Otherwise, collapse if it's a past day
+                const shouldBeCollapsed = hasUserPreference
+                    ? savedStates[cardId]
+                    : isPastDay;
+
+                if (shouldBeCollapsed) {
+                    card.classList.add('collapsed');
+                }
+
+                // Add click handler to day header
+                const header = card.querySelector('.day-header');
+                header.addEventListener('click', () => {
+                    const isCollapsed = card.classList.toggle('collapsed');
+
+                    // Save user's preference
+                    savedStates[cardId] = isCollapsed;
+                    try {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedStates));
+                    } catch (e) {
+                        console.error('Error saving state:', e);
+                    }
+                });
+            });
+
+            // Request location on page load
+            requestLocationAndHighlight();
+
+            // Detect if running as PWA (standalone mode)
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone ||
+                document.referrer.includes('android-app://');
+
+            // Only show splash screen in PWA mode
+            if (isPWA) {
+                const splashScreen = document.getElementById('splash-screen');
+                splashScreen.classList.add('show');
+
+                window.addEventListener('load', () => {
+                    setTimeout(() => {
+                        splashScreen.classList.add('fade-out');
+                        setTimeout(() => {
+                            splashScreen.style.display = 'none';
+                        }, 500);
+                    }, 2500);
+                });
+            }
         });
     </script>
 </body>
