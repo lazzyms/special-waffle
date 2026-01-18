@@ -497,4 +497,13 @@ body {
   .time-col {
     font-size: 0.8em;
   }
+
+  .map-btn {
+    font-size: 0.65em;
+    padding: 4px 7px;
+    margin-right: 5px;
+    margin-top: 3px;
+    letter-spacing: 0.02em;
+    border-width: 1.5px;
+  }
 }
