@@ -63,13 +63,6 @@ body {
   min-height: 100vh;
   padding: 20px;
   color: var(--text-primary);
-  background-image: repeating-linear-gradient(
-    0deg,
-    rgba(168, 153, 104, 0.03) 0px,
-    rgba(168, 153, 104, 0.03) 1px,
-    transparent 1px,
-    transparent 25px
-  );
 }
 
 .container {
@@ -113,21 +106,7 @@ body {
 }
 
 .day-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 24px,
-    rgba(168, 153, 104, 0.05) 24px,
-    rgba(168, 153, 104, 0.05) 25px
-  );
-  pointer-events: none;
-  border-radius: 4px;
+  content: none;
 }
 
 .day-header {
@@ -200,7 +179,7 @@ body {
 
 .stop {
   display: grid;
-  grid-template-columns: min-content 1fr;
+  grid-template-columns: 90px 1fr;
   gap: 20px;
   margin-bottom: 25px;
 }
@@ -272,49 +251,33 @@ body {
 
 /* Map Button */
 .map-btn {
-  display: inline-flex;
-  align-items: center;
-  background: var(--paper-bg);
-  color: var(--text-primary);
+  display: inline-block;
   text-decoration: none;
-  font-size: 0.75em;
-  font-weight: bold;
-  padding: 5px 10px;
-  border: 2px solid var(--text-primary);
-  border-radius: 3px;
-  transition: all 0.15s;
-  margin-right: 8px;
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow:
-    0 2px 0 var(--text-primary),
-    0 2px 3px rgba(44, 36, 22, 0.3);
+  font-size: 1.1em;
+  margin-right: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.1s;
 }
 
 .map-btn:hover {
-  transform: translateY(1px);
-  box-shadow:
-    0 1px 0 var(--text-primary),
-    0 1px 2px rgba(44, 36, 22, 0.3);
+  opacity: 1;
+  transform: scale(1.15);
 }
 
-.map-btn:active {
-  transform: translateY(2px);
-  box-shadow:
-    0 0 0 var(--text-primary),
-    0 0 1px rgba(44, 36, 22, 0.3);
+.map-btn:visited {
+  text-decoration: none;
+  color: inherit;
 }
 
-/* Transit Badge */
-.transit-badge {
-  display: inline-block;
-  background: rgba(168, 153, 104, 0.15);
-  color: var(--text-primary);
+/* Transit Badge */08);
+  color: var(--text-secondary);
   font-size: 0.75em;
-  padding: 4px 8px;
-  border: 1px dashed var(--border-color);
-  border-radius: 2px;
+  padding: 3px 6px;
+  border-left: 2px solid var(--border-color);
+  border-radius: 0;
+  margin-top: 6px;
+  font-weight: normal;
+  letter-spacing: 0.01
   margin-top: 8px;
   font-weight: bold;
   letter-spacing: 0.03em;
@@ -518,7 +481,7 @@ body {
   }
 
   .stop {
-    grid-template-columns: min-content 1fr;
+    grid-template-columns: 80px 1fr;
     gap: 15px;
   }
 
@@ -527,11 +490,7 @@ body {
   }
 
   .map-btn {
-    font-size: 0.65em;
-    padding: 4px 7px;
+    font-size: 1.3em;
     margin-right: 5px;
-    margin-top: 3px;
-    letter-spacing: 0.02em;
-    border-width: 1.5px;
   }
 }
