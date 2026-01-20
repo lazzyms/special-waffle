@@ -1,4 +1,4 @@
-// Service Worker Registration
+// Service Worker Registration with update detection
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
@@ -8,10 +8,38 @@ if ("serviceWorker" in navigator) {
           "Service Worker registered successfully:",
           registration.scope,
         );
+
+        // Check for updates every 60 seconds
+        setInterval(() => {
+          registration.update();
+        }, 60000);
+
+        // Listen for service worker updates
+        registration.addEventListener("updatefound", () => {
+          const newWorker = registration.installing;
+          console.log("New service worker found, installing...");
+
+          newWorker.addEventListener("statechange", () => {
+            if (
+              newWorker.state === "installed" &&
+              navigator.serviceWorker.controller
+            ) {
+              // New service worker available, reload page to activate
+              console.log("New version available! Reloading page...");
+              window.location.reload();
+            }
+          });
+        });
       })
       .catch((error) => {
         console.log("Service Worker registration failed:", error);
       });
+  });
+
+  // Listen for when the service worker takes control
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    console.log("Service Worker controller changed, reloading...");
+    window.location.reload();
   });
 }
 
