@@ -5,7 +5,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #2c3e50;
+  background: #111111;
   display: none;
   align-items: center;
   justify-content: center;
@@ -39,16 +39,15 @@
 }
 
 :root {
-  --bg-gradient: linear-gradient(135deg, #e8e5d5 0%, #d4cfbb 100%);
-  --card-shadow:
-    0 4px 6px rgba(44, 36, 22, 0.15), 0 2px 4px rgba(44, 36, 22, 0.1);
-  --route-line-color: #a89968;
-  --route-dot-color: #4a3f2f;
-  --accent-color: #2c2416;
-  --paper-bg: #f4f1ea;
-  --text-primary: #2c2416;
-  --text-secondary: #5a4f3f;
-  --border-color: #a89968;
+  --bg-gradient: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --route-line-color: #999999;
+  --route-dot-color: #333333;
+  --accent-color: #111111;
+  --paper-bg: #ffffff;
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --border-color: #cccccc; /* Simplified border color */
 }
 
 * {
@@ -76,7 +75,7 @@ body {
   margin-bottom: 30px;
   padding: 20px;
   background: var(--paper-bg);
-  border: 3px double var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   box-shadow: var(--card-shadow);
 }
@@ -97,7 +96,7 @@ body {
 
 .day-card {
   background: var(--paper-bg);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 25px;
   margin-bottom: 20px;
@@ -114,7 +113,7 @@ body {
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 15px;
-  border-bottom: 2px dashed var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   user-select: none;
   position: relative;
@@ -122,7 +121,7 @@ body {
 }
 
 .day-header:hover {
-  background: rgba(168, 153, 104, 0.08);
+  background: rgba(0, 0, 0, 0.03);
   margin: -5px -10px 30px -10px;
   padding: 5px 10px 20px 10px;
   border-radius: 4px;
@@ -141,20 +140,13 @@ body {
   font-weight: bold;
   margin-right: 15px;
   flex-shrink: 0;
-  border: 3px solid var(--text-primary);
-  box-shadow:
-    0 2px 4px rgba(44, 36, 22, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 2px solid var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   position: relative;
 }
 
 .day-number::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border: 1px dashed var(--border-color);
-  border-radius: 50%;
-  opacity: 0.5;
+  content: none;
 }
 
 .day-info h2 {
@@ -203,31 +195,31 @@ body {
   background: rgba(255, 255, 255, 0.5);
   padding: 15px;
   border-radius: 2px;
-  border: 1px solid rgba(168, 153, 104, 0.3);
+  border: 1px solid #e0e0e0;
   transition: all 0.2s ease;
 }
 
 .content-col:hover {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   border-color: var(--border-color);
-  box-shadow: 0 1px 3px rgba(44, 36, 22, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .content-col.nearby {
-  background: rgba(168, 200, 104, 0.3);
-  border: 2px solid #6b8e23;
-  box-shadow: 0 0 10px rgba(107, 142, 35, 0.4);
-  animation: pulse 2s ease-in-out infinite;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid #999;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  animation: none;
 }
 
 @keyframes pulse {
   0%,
   100% {
-    box-shadow: 0 0 10px rgba(107, 142, 35, 0.4);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   }
 
   50% {
-    box-shadow: 0 0 20px rgba(107, 142, 35, 0.6);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -256,7 +248,9 @@ body {
   font-size: 1.1em;
   margin-right: 4px;
   opacity: 0.7;
-  transition: opacity 0.2s, transform 0.1s;
+  transition:
+    opacity 0.2s,
+    transform 0.1s;
 }
 
 .map-btn:hover {
@@ -269,7 +263,9 @@ body {
   color: inherit;
 }
 
-/* Transit Badge */08);
+/* Transit Badge */
+.transit-badge {
+  display: block;
   color: var(--text-secondary);
   font-size: 0.75em;
   padding: 3px 6px;
@@ -277,10 +273,7 @@ body {
   border-radius: 0;
   margin-top: 6px;
   font-weight: normal;
-  letter-spacing: 0.01
-  margin-top: 8px;
-  font-weight: bold;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.01em;
 }
 
 .transit-icon {
@@ -288,7 +281,7 @@ body {
 }
 
 .info-box {
-  background: rgba(168, 153, 104, 0.1);
+  background: rgba(0, 0, 0, 0.03); /* Neutral background */
   border-left: 4px solid var(--text-primary);
   border-right: 1px solid var(--border-color);
   border-top: 1px solid var(--border-color);
@@ -313,10 +306,10 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  background: #333333; /* Dark neutral background */
   color: white;
   padding: 16px 20px;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
   display: none;
   align-items: center;
   justify-content: space-between;
@@ -374,7 +367,7 @@ body {
 }
 
 #install-btn {
-  background: #27ae60;
+  background: #555555; /* Grey background */
   color: white;
   border: none;
   padding: 10px 20px;
@@ -387,7 +380,7 @@ body {
 }
 
 #install-btn:hover {
-  background: #229954;
+  background: #333333; /* Darker grey on hover */
 }
 
 #dismiss-btn {
